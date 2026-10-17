@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AccademiaBotanica
 {
-    public class Habitat
+    public class Habitat : IEquatable<Habitat>, IComparable<Habitat>
     {
         public string Nome { get; set; }
         public StatoAmbientale Stato { get; set; }
@@ -24,14 +24,55 @@ namespace AccademiaBotanica
             return $"Habitat: {Nome} | {Stato.Descrizione()} | Numero piante: {Piante.Count}";
         }
 
-        public void AggiungiPianta(Pianta p)
+        public bool AggiungiPianta(Pianta p)
         {
+            // Non si può aggiungere una pianta uguale a una già presente
+            foreach (var pianta in Piante)
+            {
+                if (pianta.Equals(p))
+                {
+                    return false; // Già presente
+                }
+            }
             Piante.Add(p);
+            return true;
         }
 
-        public void RimuoviPianta(Pianta p)
+        public bool RimuoviPianta(string nome, Specie specie)
         {
-            Piante.Remove(p);
+            Pianta daRimuovere = null;
+            foreach (var p in Piante)
+            {
+                if (string.Equals(p.Nome, nome, StringComparison.OrdinalIgnoreCase) && p.SpeciePianta == specie)
+                {
+                    daRimuovere = p;
+                    break;
+                }
+            }
+
+            if (daRimuovere != null)
+            {
+                Piante.Remove(daRimuovere);
+                return true;
+            }
+            return false;
+        }
+
+        public bool Equals(Habitat other)
+        {
+            if (other == null) return false;
+            return string.Equals(Nome, other.Nome, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Habitat);
+        }
+
+        public int CompareTo(Habitat other)
+        {
+            if (other == null) return 1;
+            return string.Compare(Nome, other.Nome, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

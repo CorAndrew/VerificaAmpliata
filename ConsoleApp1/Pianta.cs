@@ -13,7 +13,7 @@ namespace AccademiaBotanica
         Mediterranee
     }
 
-    public abstract class Pianta
+    public abstract class Pianta : IEquatable<Pianta>, IComparable<Pianta>
     {
         public string Nome { get; set; }
         public Specie SpeciePianta { get; set; }
@@ -36,5 +36,32 @@ namespace AccademiaBotanica
 
         public abstract string ValutaCondizioni(StatoAmbientale stato);
         public abstract string GetPeriodoSpoglia();
+
+        // Due piante sono uguali se hanno stesso nome e stessa specie (case-insensitive)
+        public bool Equals(Pianta other)
+        {
+            if (other == null) return false;
+            return string.Equals(Nome, other.Nome, StringComparison.OrdinalIgnoreCase) &&
+                   SpeciePianta == other.SpeciePianta;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Pianta);
+        }
+
+        // Ordine naturale: prima per specie, poi per nome, poi per età crescente
+        public int CompareTo(Pianta other)
+        {
+            if (other == null) return 1;
+
+            int compareSpecie = SpeciePianta.CompareTo(other.SpeciePianta);
+            if (compareSpecie != 0) return compareSpecie;
+
+            int compareNome = string.Compare(Nome, other.Nome, StringComparison.OrdinalIgnoreCase);
+            if (compareNome != 0) return compareNome;
+
+            return Eta.CompareTo(other.Eta);
+        }
     }
 }

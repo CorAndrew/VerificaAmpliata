@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AccademiaBotanica
 {
-    public class StatoAmbientale
+    public class StatoAmbientale : IEquatable<StatoAmbientale>
     {
         public int Temperatura { get; set; }
         public int Umidita { get; set; }
@@ -24,6 +24,20 @@ namespace AccademiaBotanica
         public string Descrizione()
         {
             return $"Temperatura: {Temperatura}°C | Umidità: {Umidita}% | Luminosità: {Luminosita}% | Mese: {Mese}";
+        }
+
+        public bool Equals(StatoAmbientale other)
+        {
+            if (other == null) return false;
+            return Temperatura == other.Temperatura &&
+                   Umidita == other.Umidita &&
+                   Luminosita == other.Luminosita &&
+                   Mese == other.Mese;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as StatoAmbientale);
         }
     }
 }
